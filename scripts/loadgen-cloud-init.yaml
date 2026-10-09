@@ -1,0 +1,10 @@
+#cloud-config
+package_update: true
+packages: [git, python3-pip, python3-venv, jq, curl]
+runcmd:
+  - snap install kubectl --classic
+  - |
+    V=$(curl -sI https://github.com/grafana/k6/releases/latest | grep -i '^location' | sed 's|.*/tag/||;s|\r||')
+    curl -sL "https://github.com/grafana/k6/releases/download/${V}/k6-${V}-linux-amd64.tar.gz" | tar xz --strip-components=1 -C /usr/local/bin --wildcards '*/k6'
+  - sysctl -w net.ipv4.ip_local_port_range="1024 65535"
+  - sysctl -w net.ipv4.tcp_tw_reuse=1

@@ -1,0 +1,11 @@
+keys/*
+!keys/.gitkeep
+results/*
+!results/.gitkeep
+__pycache__/
+*.pyc
+seeded/out/
+meshsvc
+.venv/
+k8s/generated/*.yaml
+!k8s/generated/.gitkeep

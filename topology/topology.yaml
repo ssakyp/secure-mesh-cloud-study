@@ -1,0 +1,38 @@
+# Single source of truth for the synthetic testbed AND the intended security policy.
+# The decomposition mirrors the planned tenge-tracker split (see DECOMPOSITION in the article draft).
+services:
+  - gateway        # edge: accepts external traffic
+  - identity       # issues/validates identities (tenge-tracker: auth, users, permissions)
+  - ledger         # finance core (accounts, transactions, budgets, debts ...)
+  - account
+  - category
+  - receipt        # receipt import; calls an external fiscal-data operator
+  - ai             # AI assistant; calls an external LLM API
+  - health         # most sensitive data (blood analysis, medications)
+  - gamification
+  - audit
+  - report
+  - extstub        # in-cluster stand-in for external services (OFD/LLM)
+
+# Intended east-west policy: src -> [allowed destinations]. Everything else must be denied.
+edges:
+  gateway: [identity, ledger, receipt, ai, health, report]
+  ledger: [account, category, gamification, audit]
+  account: [audit]
+  receipt: [ledger, gamification, extstub]
+  ai: [ledger, extstub]
+  report: [ledger]
+
+# Services that intentionally accept calls from any source (the edge).
+public: [gateway]
+
+# Benchmark request chains; hops = number of service-to-service calls.
+chains:
+  c0: [gateway]
+  c1: [gateway, identity]
+  c2: [gateway, ledger, account]
+  c3: [gateway, receipt, ledger, gamification]
+  c4: [gateway, receipt, ledger, account, audit]
+
+# Crown-jewel services: used by the blast-radius analysis.
+sensitive: [health, identity]
