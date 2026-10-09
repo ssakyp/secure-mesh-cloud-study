@@ -13,4 +13,4 @@ for s in a0 a1 b c d; do
 done
 kubectl wait --for=condition=Ready pod/attacker -n attacker-mesh --timeout=120s
 kubectl wait --for=condition=Ready pod/attacker -n attacker-nomesh --timeout=120s
-echo "deployed. LoadBalancer addresses:"; kubectl get svc gateway-lb -A
+echo "deployed. LoadBalancer addresses:"; kubectl get svc -A | grep -E "NAMESPACE|gateway-lb"

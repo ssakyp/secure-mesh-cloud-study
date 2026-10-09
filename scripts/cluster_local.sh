@@ -7,5 +7,5 @@ k3d cluster create mesh --servers 1 --agents 2 --k3s-arg "--disable=traefik@serv
 docker build -t mesh-svc:dev svc/
 k3d image import mesh-svc:dev -c mesh
 scripts/install_istio.sh
-IMAGE=mesh-svc:dev scripts/deploy.sh
+IMAGE=mesh-svc:dev scripts/deploy.sh --replicas 1
 echo "now: python3 scripts/run_matrix.py --local-lb --knee <rps> ...   (k6 on the same laptop => results are a pilot only)"
