@@ -2,7 +2,7 @@
 """E3 analysis: per-second success rate / p95 from a k6 `--out csv` time series plus an events.jsonl log.
 Reports: baseline success, minimum success during the fault, failed-request count, time-to-recover
 (first second after fault start from which success >= baseline-0.5pp for 10 consecutive seconds)."""
-import argparse, json, pathlib
+import argparse, json, pathlib, sys
 import numpy as np
 import pandas as pd
 
@@ -72,11 +72,17 @@ def main():
     t = per_second(d / "k6.csv")
     events = [json.loads(l) for l in open(d / "events.jsonl")]
     res = analyse(t, events)
+    res["valid"] = bool(res["baseline_success"] >= 0.99)
+    if not res["valid"]:
+        res["invalid_reason"] = (f"baseline success {res['baseline_success']:.3f} < 0.99: the service was not healthy before the fault, "
+                                 "so these numbers say nothing about the fault")
+        print("*** INVALID RUN: " + res["invalid_reason"], file=sys.stderr)
     if any(e["event"].startswith("cert_seen") for e in events):
         res.update(cert_summary(events))
     (d / "resilience.json").write_text(json.dumps(res, indent=1))
     plot(t, events, d / "timeline.png")
     print(json.dumps(res, indent=1))
+    sys.exit(0 if res["valid"] else 2)
 
 
 if __name__ == "__main__":

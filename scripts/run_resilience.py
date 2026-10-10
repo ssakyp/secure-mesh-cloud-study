@@ -94,6 +94,22 @@ def observe_certs(ns, target, log, stop):
         stop.wait(30)
 
 
+def wait_healthy(url, chain, token, need=15, timeout=180):
+    """A fault test is only meaningful if the system is healthy first: require `need` consecutive HTTP 200s."""
+    import urllib.request
+    ok, t_end = 0, time.time() + timeout
+    while time.time() < t_end:
+        req = urllib.request.Request(f"{url}/{chain}", headers={"Authorization": f"Bearer {token}"})
+        try:
+            ok = ok + 1 if urllib.request.urlopen(req, timeout=3).status == 200 else 0
+        except Exception:
+            ok = 0
+        if ok >= need:
+            return True
+        time.sleep(0.5)
+    return False
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--scenario", required=True)
@@ -109,6 +125,7 @@ def main():
     ap.add_argument("--url", default="")
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--tag", default="")
+    ap.add_argument("--no-preflight", action="store_true", help="skip the health gate (not recommended)")
     ap.add_argument("--out", default=str(ROOT / "results" / "e3"))
     a = ap.parse_args()
     ns = f"mesh-{a.scenario}"
@@ -119,6 +136,8 @@ def main():
     log = Log(run / "events.jsonl")
     total = a.baseline + (a.hold if a.fault == "cert-observe" else a.after) + 30
     token = (ROOT / "keys/tokens/valid.jwt").read_text().strip()
+    if not a.no_preflight and not wait_healthy(url, a.chain, token):
+        sys.exit(f"ABORT: {url}/{a.chain} did not return HTTP 200 fifteen times in a row within 180 s - the system is not healthy, nothing was injected.")
     env = dict(os.environ, K6_CSV_TIME_FORMAT="unix")
     k6 = subprocess.Popen([K6, "run", "--quiet", "--no-usage-report", "--out", f"csv={run / 'k6.csv'}", "-e", f"GATEWAY_URL={url}", "-e", f"CHAIN={a.chain}",
                            "-e", f"RATE={a.rate}", "-e", "WARMUP=0", "-e", f"DURATION={total}", "-e", f"TOKEN={token}", "-e", "MAX_VUS=3000",
