@@ -62,3 +62,10 @@ One mesh implementation (Istio sidecar mode, not ambient/Linkerd); one provider/
 ## 12. Deviation log
 | Date | Deviation | Reason | Effect on conclusions |
 |---|---|---|---|
+
+## Pilot-informed changes (laptop pilot, 2026-10-10, before preregistration)
+1. Knee rule: p95 limit is max(2x, +10 ms) of the reference; the partial final bin is discarded; a ramp that never leaves the healthy region is reported as a lower bound only.
+2. A knee is measured for EVERY scenario. Test rates are fractions of the LOWEST knee among the compared scenarios, so no scenario is saturated; E1c (D vs C) uses 0.5 x min(knee_C, knee_D).
+3. Capacity ratio (knee / knee of A0) and sidecar CPU per 1,000 req/s are primary outcomes.
+4. Runs per cell are derived from the pilot: n = ceil(2960 x sigma^2) for ~80% power to show "negligible" (checked by simulation), where sigma = SD of log p95 across runs.
+5. The load-generator CPU validity limit (80%) applies only when the generator runs on a separate host; on a shared host set MAX_GEN_CPU=100 and say so.
