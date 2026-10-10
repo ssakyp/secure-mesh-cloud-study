@@ -9,7 +9,7 @@ const RAMP = parseInt(__ENV.RAMP || '300');
 const TOKEN = __ENV.TOKEN || '';
 
 export const options = {
-  scenarios: { ramp: { executor: 'ramping-arrival-rate', startRate: 10, timeUnit: '1s', preAllocatedVUs: 300, maxVUs: 5000,
+  scenarios: { ramp: { executor: 'ramping-arrival-rate', startRate: 10, timeUnit: '1s', preAllocatedVUs: 300, maxVUs: parseInt(__ENV.MAX_VUS || "5000"),
     stages: [{ target: MAX_RATE, duration: `${RAMP}s` }] } },
   discardResponseBodies: true,
 };

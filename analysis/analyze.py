@@ -17,7 +17,7 @@ from scipy import stats
 
 DELTA_NEG, DELTA_ACC, BOOT = 0.10, 0.25, 10000
 VARIANTS = {"primary": 0.01, "lenient": 0.05, "strict": 0.001, "none": 1.01}   # max failed-request fraction
-MAX_DROPPED, MAX_GEN_CPU = 0.01, 80.0
+MAX_DROPPED, MAX_GEN_CPU = 0.01, float(__import__("os").environ.get("MAX_GEN_CPU", "80"))
 CONTRASTS = [("c", "a1"), ("c", "a0"), ("a1", "a0"), ("b", "a0"), ("d", "c")]
 LABEL = {"a0": "A0 no mesh", "a1": "A1 mesh (permissive)", "b": "B app-layer JWT", "c": "C strict mTLS+AuthZ", "d": "D C+mesh JWT"}
 
