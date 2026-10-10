@@ -104,7 +104,7 @@ def one_run(r, a, k6_version):
     cpu.start()
     timer = None
     if not a.no_kube:
-        timer = threading.Timer(a.warmup + a.duration * 0.7, kube_snapshot, args=(f"mesh-{r['scenario']}", d))
+        timer = threading.Timer(a.warmup + a.duration + 1, kube_snapshot, args=(f"mesh-{r['scenario']}", d))
         timer.start()
     cmd = [K6, "run", "--quiet", "--no-usage-report", "-e", f"GATEWAY_URL={url}", "-e", f"CHAIN={r['chain']}", "-e", f"RATE={r['rate']}",
            "-e", f"WARMUP={a.warmup}", "-e", f"DURATION={a.duration}", "-e", f"TOKEN={token}", "-e", f"MAX_VUS={a.max_vus}",

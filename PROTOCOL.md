@@ -69,3 +69,4 @@ One mesh implementation (Istio sidecar mode, not ambient/Linkerd); one provider/
 3. Capacity ratio (knee / knee of A0) and sidecar CPU per 1,000 req/s are primary outcomes.
 4. Runs per cell are derived from the pilot: n = ceil(2960 x sigma^2) for ~80% power to show "negligible" (checked by simulation), where sigma = SD of log p95 across runs.
 5. The load-generator CPU validity limit (80%) applies only when the generator runs on a separate host; on a shared host set MAX_GEN_CPU=100 and say so.
+6. The `kubectl top` snapshot is taken 1 s after the measurement window, not inside it (it ran 0.7 x duration into the window in the first pilots). Diagnostic: 6 A1 runs without it had sd(log p95) = 0.10, versus 0.25-0.51 with it (suggestive only: different time of day, n = 5 vs 6). Sidecar CPU is therefore the last metrics-server sample (15 s resolution) and is reported as approximate.
