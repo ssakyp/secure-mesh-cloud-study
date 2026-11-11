@@ -70,3 +70,11 @@ One mesh implementation (Istio sidecar mode, not ambient/Linkerd); one provider/
 4. Runs per cell are derived from the pilot: n = ceil(2960 x sigma^2) for ~80% power to show "negligible" (checked by simulation), where sigma = SD of log p95 across runs.
 5. The load-generator CPU validity limit (80%) applies only when the generator runs on a separate host; on a shared host set MAX_GEN_CPU=100 and say so.
 6. The `kubectl top` snapshot is taken 1 s after the measurement window, not inside it (it ran 0.7 x duration into the window in the first pilots). Diagnostic: 6 A1 runs without it had sd(log p95) = 0.10, versus 0.25-0.51 with it (suggestive only: different time of day, n = 5 vs 6). Sidecar CPU is therefore the last metrics-server sample (15 s resolution) and is reported as approximate.
+
+## 7. Local-study amendment (prereg-v1, 2026-11-11)
+1. Environment: one Windows laptop, WSL2 (about 10 GB), 3-node k3d cluster, k6 on the same host, MAX_GEN_CPU=100. Absolute latencies do not transfer to a cloud; claims are relative comparisons between scenarios on this host.
+2. Host-interruption rule: a run that overlaps a WSL/session restart, sleep, or any manual intervention is invalid and is rerun. Every such event is logged.
+3. Sizing pilot `noise1` (A1 and C, c3, 0.3 x knee, 10 runs each) is not confirmatory data. After the pre-declared failed>1% rule, SD of log p95 was 0.143 (A1) and 0.029 (C). Margin: +/-10% on p95; 16 runs per cell.
+4. Stage 1: scenarios a0,a1,b,c; chain c3; rates 0.3,0.6,0.8 x 572 req/s; 10 s warm-up, 60 s window; --no-kube. Sidecar CPU is measured separately.
+5. Stage 2: if the 95% CI of the C/A1 p95 ratio at any rate is wider than +/-10%, extend A1 and C at that rate to 60 runs per cell.
+6. Spread is recomputed from Stage 1 data; any change to this design after Stage 1 goes in the deviation log.
