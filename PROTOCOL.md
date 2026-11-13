@@ -78,3 +78,9 @@ One mesh implementation (Istio sidecar mode, not ambient/Linkerd); one provider/
 4. Stage 1: scenarios a0,a1,b,c; chain c3; rates 0.3,0.6,0.8 x 572 req/s; 10 s warm-up, 60 s window; --no-kube. Sidecar CPU is measured separately.
 5. Stage 2: if the 95% CI of the C/A1 p95 ratio at any rate is wider than +/-10%, extend A1 and C at that rate to 60 runs per cell.
 6. Spread is recomputed from Stage 1 data; any change to this design after Stage 1 goes in the deviation log.
+
+## 8. Amendment prereg-v2 (2026-11-13): drift and restart rule
+1. Observation: after about 2.5 days of cluster uptime, A1 p95 at 0.6 x knee rose from 6.0 ms (early block) to 25.7 ms; A0 rose from 1.8 to 2.7 ms. Restarting the mesh-a1 workloads returned A1 to 6.6 ms (5 runs, results/drift_check_a1_restart). Cause not identified.
+2. Stage-1 reps 17-60 (A1, C) ran in the degraded state and are reported as exploratory only. Stage-1 reps 1-16 (all scenarios) are replicate 1.
+3. Session 3 (replicate 2): scenarios a0,a1,b,c; chain c3; rates 0.3,0.6,0.8 x 572; 16 runs per cell; workloads in mesh-a0/a1/b/c are restarted and given 30 s before each repetition block of 12 runs.
+4. Analysis: each replicate is analysed on its own; pooled results are reported only if both replicates agree. The drift of p95 over repetition number within session 3 is reported.
