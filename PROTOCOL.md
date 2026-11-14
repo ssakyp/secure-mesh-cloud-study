@@ -84,3 +84,10 @@ One mesh implementation (Istio sidecar mode, not ambient/Linkerd); one provider/
 2. Stage-1 reps 17-60 (A1, C) ran in the degraded state and are reported as exploratory only. Stage-1 reps 1-16 (all scenarios) are replicate 1.
 3. Session 3 (replicate 2): scenarios a0,a1,b,c; chain c3; rates 0.3,0.6,0.8 x 572; 16 runs per cell; workloads in mesh-a0/a1/b/c are restarted and given 30 s before each repetition block of 12 runs.
 4. Analysis: each replicate is analysed on its own; pooled results are reported only if both replicates agree. The drift of p95 over repetition number within session 3 is reported.
+
+## 9. Amendment prereg-v3 (2026-11-14): E3 design on this host
+1. Scenarios a0,a1,c; faults pod-kill, rollout, node-drain (a0,a1,c) and istiod-down, plain and with --with-restart (a1,c only); n=5 per cell; chain c3; target ledger.
+2. Load 286 req/s = 0.5 x the A1/C knee (572), not 0.5 x the A0 knee (about 1095 req/s), which would overload the meshed scenarios on this host.
+3. Before every run: istiod scaled to 1, all nodes uncordoned, the scenario's workloads restarted and given 30 s (drift rule, section 8).
+4. Order: repetition-major (rep 1 of every cell, then rep 2 ...), so stopping early leaves a balanced design.
+5. Cert-observe (30 min) is not run here; certificate rotation is reported as not observed.
