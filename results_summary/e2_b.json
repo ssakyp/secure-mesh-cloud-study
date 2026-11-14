@@ -1,0 +1,51 @@
+{
+ "scenario": "b",
+ "none": {
+  "pairs": 156,
+  "unauthorized_pairs": 126,
+  "blocked_unauthorized": 126,
+  "block_rate": 1.0,
+  "block_rate_ci95": [
+   0.9704,
+   1.0
+  ],
+  "legit_pairs": 30,
+  "wrongly_blocked_legit": 30,
+  "false_block_rate": 1.0,
+  "conformance": 0.8077,
+  "conformance_ci95": [
+   0.7388,
+   0.8618
+  ],
+  "errors": 0
+ },
+ "valid": {
+  "pairs": 156,
+  "unauthorized_pairs": 126,
+  "blocked_unauthorized": 0,
+  "block_rate": 0.0,
+  "block_rate_ci95": [
+   -0.0,
+   0.0296
+  ],
+  "legit_pairs": 30,
+  "wrongly_blocked_legit": 0,
+  "false_block_rate": 0.0,
+  "conformance": 0.1923,
+  "conformance_ci95": [
+   0.1382,
+   0.2612
+  ],
+  "errors": 0
+ },
+ "jwt_gateway": {
+  "invalid_tokens_tested": 8,
+  "invalid_accepted": 0,
+  "no_token_accepted": false,
+  "valid_accepted": true
+ },
+ "egress": {
+  "tested": 2,
+  "reachable": 2
+ }
+}

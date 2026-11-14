@@ -1,0 +1,14 @@
+fault,scenario,n,recov_med,failed_med,minsucc_med,max_p95_med
+istiod-down,a1,5,0.0,0.0,1.0,120.7
+istiod-down,c,5,0.0,0.0,1.0,878.7
+istiod-down-churn,a1,5,0.0,37.0,0.87,246.1
+istiod-down-churn,c,5,0.0,33.0,0.88,477.8
+node-drain,a0,5,19.0,2657.0,0.0,3013.0
+node-drain,a1,5,15.0,1972.0,0.0,1949.0
+node-drain,c,5,23.0,1787.0,0.0,2790.3
+pod-kill,a0,5,1.0,54.0,0.73,821.9
+pod-kill,a1,5,6.0,1359.0,0.0,152.2
+pod-kill,c,5,6.0,1345.0,0.0,140.1
+rollout,a0,5,8.0,214.0,0.58,83.1
+rollout,a1,5,0.0,643.0,0.0,6912.9
+rollout,c,5,0.0,677.0,0.04,6492.9
