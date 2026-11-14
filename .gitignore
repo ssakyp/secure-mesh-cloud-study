@@ -9,3 +9,8 @@ meshsvc
 .venv/
 k8s/generated/*.yaml
 !k8s/generated/.gitkeep
+
+results/
+keys/
+.venv/
+*.tar.gz
