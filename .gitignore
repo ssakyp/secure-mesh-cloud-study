@@ -14,3 +14,6 @@ results/
 keys/
 .venv/
 *.tar.gz
+results.zip
+*.zip
+*.tar.gz
